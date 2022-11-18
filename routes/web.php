@@ -32,4 +32,6 @@ Route::middleware([
     Route::get('/task/{task}', [TasksController::class, 'edit']);
     Route::post('/task/{task}', [TasksController::class, 'update']);
 
+    Route::post('/dashboard', [TasksController::class, 'search']);
+
 });
