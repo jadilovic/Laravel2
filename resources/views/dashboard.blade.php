@@ -3,19 +3,25 @@
     <h2 class="font-semibold text-xl text-gray-800 leading-tight">
         {{ __('Dashboard') }}
     </h2>
+    <form method="POST" action="/dashboard">
+        <div class="mt-4">
+            <x-jet-label for="search" value="{{ __('Search tasks by title') }}" />
+            <x-jet-input id="search" class="block mt-1 w-full" type="text" name="search" required />
+        </div>
+        <div class="form-group">
+            <x-jet-button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Search</x-jet-button>
+        </div>
+        {{ csrf_field() }}
+        @isset($foundTask)
+            <h6>{{$foundTask->title}}</h6>
+        @endisset
+        @if ($errors->has('search'))
+            <span class="text-danger">{{ $errors->first('search') }}</span>
+        @endif
+    </form>
 </x-slot>
 
 <div class="py-12">
-    <form method="POST" action="/dashboard">
-    <div class="mt-4">
-        <x-jet-label for="search" value="{{ __('Search tasks by title') }}" />
-        <x-jet-input id="search" class="block mt-1 w-full" type="text" name="search" required />
-    </div>
-     <div class="form-group">
-        <x-jet-button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Search</x-jet-button>
-    </div>
-    {{ csrf_field() }}
-    </form>
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
         <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-5">
             <div style="display: flex; justify-content:space-between;">
@@ -35,7 +41,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                @foreach(auth()->user()->tasks as $task)
+                @foreach($tasks as $task)
                     <tr class="border-b hover:bg-orange-100">
                         <td class="p-3 px-5">
                             {{$task->title}}

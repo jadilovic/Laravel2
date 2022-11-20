@@ -10,7 +10,6 @@ class TasksController extends Controller
 
     public function index() {
         $tasks = auth()->user()->tasks;
-        // $foundTask = $tasks['0'];
         return view('dashboard', compact('tasks'));
     }
 
@@ -19,16 +18,21 @@ class TasksController extends Controller
     }
 
     public function search(Request $request) {
-        // var_dump('test');
-        // $this->validate($request, [
-        //     'search' => 'required|min:3'
-        // ]);
-        // $tasks = auth()->user()->tasks;
-        // $foundTask = $tasks->first(function($task, $request) {
-        //     return $task->title == $request->search;
-        // });
-        // var_dump($foundTask->title);
-        return redirect('/dashboard');
+        $this->validate($request, [
+            'search' => 'required|min:3'
+        ]);
+
+        $foundTask = new Task();
+        $tasks = auth()->user()->tasks;
+        foreach ($tasks as $value) {
+            if ($value->title == $request->search) {
+                $foundTask = $value;
+            }
+        }
+        if (!$foundTask->title) {
+            $foundTask->title = "Not task found with entred title";
+        }
+        return view('/dashboard', compact('tasks', 'foundTask'));
     }
 
     public function create(Request $request) {
@@ -36,7 +40,7 @@ class TasksController extends Controller
             'description' => 'required|min:10|unique:tasks'
         ]);
 
-        $task = new Task;
+        $task = new Task();
         $task->description = $request->description;
         $task->title = $request->title;
         $task->user_id = auth()->user()->id;
@@ -55,6 +59,8 @@ class TasksController extends Controller
     public function update(Request $request, Task $task) {
         if (isset($_POST['delete'])) {
             $task->delete();
+            return redirect('/dashboard');
+        } else if ($request->description == $task->description) {
             return redirect('/dashboard');
         } else {
             $this->validate($request, [
