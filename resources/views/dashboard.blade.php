@@ -64,5 +64,6 @@
             
         </div>
     </div>
+    {{phpinfo()}}
 </div>
 </x-app-layout>

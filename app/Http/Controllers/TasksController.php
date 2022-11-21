@@ -5,16 +5,41 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Task;
 
+function log_to_console($data, bool $quotes = true) {
+    $output = json_encode($data);
+    if ($quotes) {
+        echo "<script>console.log('{$output}' );</script>";
+    } else {
+        echo "<script>console.log({$output} );</script>";
+    }
+}
+
 class TasksController extends Controller
 {
 
     public function index() {
         $tasks = auth()->user()->tasks;
+        $calc = "15" + 3;
+        $ter = $calc > 10 ? "vece" : "manje";
+        $ter .= " i vece";
+        $arr = array(3 => "boob", 4 => "cool", 7 => "too");
+        $arr2 = array();
+        $arr2[] = "aki";
+        $arr2[] = "cuni";
+        $arr2[] = "adian";
+        $arr2[] = "ali";
+        foreach($arr2 as $k => $v) {
+            log_to_console("Key: " . $k . ", Value: " . $v);
+        }
+        log_to_console($arr2);
+        log_to_console(is_array($arr2));
         return view('dashboard', compact('tasks'));
     }
 
     public function add() {
-        return view('add');
+        $isChecked = true;
+        $versions = ['a', 'b', 'c', 'd'];
+        return view('add', compact('isChecked', 'versions'));
     }
 
     public function search(Request $request) {
@@ -49,6 +74,8 @@ class TasksController extends Controller
     }
 
     public function edit(Task $task) {
+        log_to_console($task, false);
+
         if (auth()->user()->id == $task->user_id) {
             return view('edit', compact('task'));
         } else {
