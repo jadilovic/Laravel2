@@ -75,6 +75,8 @@ class TasksController extends Controller
 
     public function edit(Task $task) {
         log_to_console($task, false);
+        log_to_console($_GET);
+        log_to_console($_POST);
 
         if (auth()->user()->id == $task->user_id) {
             return view('edit', compact('task'));
